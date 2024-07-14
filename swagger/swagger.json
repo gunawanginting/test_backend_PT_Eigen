@@ -1,0 +1,226 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "perpustakaan API",
+    "version": "1.0.0",
+    "description": "API mengatur peminjaman buku"
+  },
+  "paths": {
+    "/anggota": {
+      "get": {
+        "summary": "Get all anggota",
+        "responses": {
+          "200": {
+            "description": "A list of anggota",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Anggota"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/anggota/{id}": {
+      "get": {
+        "summary": "Get a specific anggota by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the anggota to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Details of the anggota",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Anggota"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Anggota not found"
+          }
+        }
+      }
+    },
+    "/buku": {
+      "get": {
+        "summary": "Get all buku",
+        "responses": {
+          "200": {
+            "description": "A list of buku",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Buku"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/buku/{kode}": {
+      "get": {
+        "summary": "Get details of a specific buku by kode",
+        "parameters": [
+          {
+            "name": "kode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Kode of the buku to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Details of the buku",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Buku"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Buku not found"
+          }
+        }
+      }
+    },
+    "/buku/pinjam": {
+      "post": {
+        "summary": "Pinjam buku by anggota",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "anggotaId": {
+                    "type": "string"
+                  },
+                  "bukuKode": {
+                    "type": "string"
+                  }
+                },
+                "required": ["anggotaId", "bukuKode"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Buku successfully borrowed"
+          },
+          "400": {
+            "description": "Bad request. Check input data"
+          },
+          "404": {
+            "description": "Anggota or buku not found"
+          },
+          "409": {
+            "description": "Conflict. Buku is already borrowed by another anggota"
+          }
+        }
+      }
+    },
+    "/buku/kembali": {
+      "post": {
+        "summary": "Kembalikan buku by anggota",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "anggotaId": {
+                    "type": "string"
+                  },
+                  "bukuKode": {
+                    "type": "string"
+                  }
+                },
+                "required": ["anggotaId", "bukuKode"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Buku successfully returned"
+          },
+          "400": {
+            "description": "Bad request. Check input data"
+          },
+          "404": {
+            "description": "Anggota or buku not found"
+          },
+          "409": {
+            "description": "Conflict. Buku was not borrowed by the anggota"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Anggota": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "type": "string",
+            "example": "M001"
+          },
+          "nama": {
+            "type": "string",
+            "example": "Angga"
+          }
+        }
+      },
+      "Buku": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "type": "string",
+            "example": "JK-45"
+          },
+          "judul": {
+            "type": "string",
+            "example": "Harry Potter"
+          },
+          "penulis": {
+            "type": "string",
+            "example": "J.K Rowling"
+          },
+          "stok": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      }
+    }
+  }
+}
